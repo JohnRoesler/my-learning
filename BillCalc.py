@@ -81,8 +81,12 @@ for i in listnames:
     resultdict[i]["costmsg"] = resultdict[i].get("costmsg",0) + round((resultdict["Total"]["costmsg"] * resultdict[i]["msg"] / resultdict["Total"]["msg"]),2)
     resultdict[i]["costmb"] = resultdict[i].get("costmb",0) + round((resultdict["Total"]["costmb"] * resultdict[i]["mb"] / resultdict["Total"]["mb"]),2)
     resultdict[i]["costtotal"] = round(resultdict[i]["costmin"] + resultdict[i]["costmsg"] + resultdict[i]["costmb"] + device + resultdict["Total"]["fees"] / 6,2)
-f = csv.writer(open("monthlybill.csv", "wb"))
-for key1,value1 in resultdict.items():
-    for key2,value2 in resultdict[key1].items():
-        if key2 == "costtotal":
-            f.writerow([key1,key2,value2])
+#export the results to a csv file
+with open("monthlybill.csv", "wb") as csvfile:
+    fieldnames = ["Name", "Minutes", "Messages", "Megabytes", "Total Cost"]
+    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    writer.writeheader()
+    for i in listnames:
+        writer.writerow({"Name": key1, "Minutes": resultdict[key1]["min"], "Messages": resultdict[key1]["msg"], "Megabytes": resultdict[key1]["mb"], "Total Cost": resultdict[key1]["costtotal"]})
+    writer.writerow({"Name": "Total", "Minutes": resultdict["Total"]["min"], "Messages": resultdict["Total"]["msg"], "Megabytes": resultdict["Total"]["mb"], "Total Cost": resultdict["Total"]["costtotal"]})
+            
