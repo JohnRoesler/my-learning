@@ -25,38 +25,48 @@ def create_name_dictionary():
 create_name_dictionary()
 #Define billing usage buckets as: usage limit, cost in dollars
 minutes = dict()
-minutes['small'] = (100,3.0)
-minutes['medium'] = (500,9.0)
-minutes['large'] = (1000,18.0)
-minutes['xlarge'] = (2100,35.0)
-minutes['extra'] = (2100,0.019)
 messages = dict()
-messages['small'] = (100,3.0)
-messages['medium'] = (1000,5.0)
-messages['large'] = (2000,8.0)
-messages['xlarge'] = (4100,11.0)
-messages['extra'] = (4100,0.0025)
 megabytes = dict()
-megabytes['small'] = (100,3.0)
-megabytes['medium'] = (500,12.0)
-megabytes['large'] = (1000,19.0)
-megabytes['xlarge'] = (2000,29.0)
-megabytes['extra'] = (2000,0.015)
-device = 6
-allowedvariance = 0
+device = 0
+def billing_usage_buckets():
+    global minutes
+    minutes['small'] = (100,3.0)
+    minutes['medium'] = (500,9.0)
+    minutes['large'] = (1000,18.0)
+    minutes['xlarge'] = (2100,35.0)
+    minutes['extra'] = (2100,0.019)
+    global messages
+    messages['small'] = (100,3.0)
+    messages['medium'] = (1000,5.0)
+    messages['large'] = (2000,8.0)
+    messages['xlarge'] = (4100,11.0)
+    messages['extra'] = (4100,0.0025)
+    global megabytes
+    megabytes['small'] = (100,3.0)
+    megabytes['medium'] = (500,12.0)
+    megabytes['large'] = (1000,19.0)
+    megabytes['xlarge'] = (2000,29.0)
+    megabytes['extra'] = (2000,0.015)
+    global device
+    device = 6
+    allowedvariance = 0
+billing_usage_buckets()
 #Take bill information as inputs: total bill
-while True:
-    billinput = raw_input("Please enter the total bill as 00.00:\n")
-    if billinput == "q":
-        quit()
-    else: 
-        try:
-            billinput = float(billinput)
-            break
-        except: 
-            print "Invalid input. You may press q to quit."
-            continue
-resultdict["Total"]["costtotal"] = billinput
+def take_bill_info():
+    while True:
+        billinput = raw_input("Please enter the total bill as 00.00:\n")
+        if billinput == "q":
+            quit()
+        else: 
+            try:
+                billinput = float(billinput)
+                break
+            except: 
+                print "Invalid input. You may press q to quit."
+                continue
+    global resultdict
+    resultdict["Total"]["costtotal"] = billinput
+take_bill_info()
 #Open files throug user input, or default to standard names if blank - will add user input later
 pathmin = "minutes*.csv"
 pathmsg = "messages*.csv"
@@ -78,6 +88,7 @@ def error_check(fname,var):
             if i not in checklist:
                 print "You input a name,'%s', that is not in the bill files." % i
                 quit()
+    fname.seek(0)
 #Loop through usage files and sum by person and total
 error_check(rawminutes,5)
 error_check(rawmessages,4)
@@ -101,7 +112,6 @@ for line in rawmegabytes:
             resultdict[i]["mb"] = resultdict[i].get("mb",0) + int(splitline[5])
             resultdict["Total"]["mb"] = resultdict["Total"].get("mb",0) + int(splitline[5])
 #convert megabytes current storage of kilobytes into megabytes
-print resultdict
 for i in listnames:
     resultdict[i]["mb"] = int(round(resultdict[i]["mb"] / 1024.00))
 #calculate the cost per unit
