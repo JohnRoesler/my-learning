@@ -4,10 +4,18 @@ import csv
 #Define the global variables needed
 resultdict = dict()
 listnames = list()
+minutes = dict()
+messages = dict()
+megabytes = dict()
+device = 0
+rawminutes = ""
+rawmessages = ""
+rawmegabytes = ""
 #Create a dictionary full of dictionaries for each person with usage bill and one for total
 def create_name_dictionary():
     global listnames
     global resultdict
+    listnames[:] = []
     inputnames = raw_input("Input the names in the bill separated by commas e.g. Bob, Jane, Bill:\n")
     if inputnames == "":
         while True:
@@ -24,10 +32,6 @@ def create_name_dictionary():
     resultdict = {x:{} for x in listnames}
 create_name_dictionary()
 #Define billing usage buckets as: usage limit, cost in dollars
-minutes = dict()
-messages = dict()
-megabytes = dict()
-device = 0
 def billing_usage_buckets():
     global minutes
     minutes['small'] = (100,3.0)
@@ -51,6 +55,46 @@ def billing_usage_buckets():
     device = 6
     allowedvariance = 0
 billing_usage_buckets()
+#Open files throug user input, or default to standard names if blank - will add user input later
+def open_usage_files():
+    global rawminutes, rawmessages, rawmegabytes
+    pathmin = "minutes*.csv"
+    pathmsg = "messages*.csv"
+    pathmb = "megabytes*.csv"
+    for filename in glob.glob(pathmin):
+        rawminutes = open(filename)
+    for filename in glob.glob(pathmsg):
+        rawmessages = open(filename)
+    for filename in glob.glob(pathmb):
+        rawmegabytes = open(filename)
+open_usage_files()
+#Check files for names input to confirm if any are not in the files
+def error_check(fname1,fname2,fname3,var1,var2,var3):
+    while True:
+        counter = 0
+        name_error = list()
+        global checklist
+        checklist = list()
+        name_list_error_check(fname1,var1)
+        name_list_error_check(fname2,var2)
+        name_list_error_check(fname3,var3)
+        for i in listnames:
+            if i != "Total":
+                if i not in checklist:
+                    counter +=1
+                    name_error.append(i)
+        if counter != 0: 
+            print "You input the following names that are not in the bill files: %s." % name_error
+            print "Please re-input the names in the billing file."
+            create_name_dictionary()
+            name_error[:] = []
+        else: return
+def name_list_error_check(fname,var):
+    for lines in fname:
+        sline = lines.split(",")
+        checklist.append(sline[var])
+    fname.seek(0, 0)
+error_check(rawminutes,rawmessages,rawmegabytes,5,4,3)
 #Take bill information as inputs: total bill
 def take_bill_info():
     while True:
@@ -67,32 +111,7 @@ def take_bill_info():
     global resultdict
     resultdict["Total"]["costtotal"] = billinput
 take_bill_info()
-#Open files throug user input, or default to standard names if blank - will add user input later
-pathmin = "minutes*.csv"
-pathmsg = "messages*.csv"
-pathmb = "megabytes*.csv"
-for filename in glob.glob(pathmin):
-    rawminutes = open(filename)
-for filename in glob.glob(pathmsg):
-    rawmessages = open(filename)
-for filename in glob.glob(pathmb):
-    rawmegabytes = open(filename)
-#Check files for names input to confirm if any are not in the files
-def error_check(fname,var):
-    checklist = list()
-    for lines in fname:
-        sline = lines.split(",")
-        checklist.append(sline[var])
-    for i in listnames:
-        if i != "Total":
-            if i not in checklist:
-                print "You input a name,'%s', that is not in the bill files." % i
-                quit()
-    fname.seek(0)
 #Loop through usage files and sum by person and total
-error_check(rawminutes,5)
-error_check(rawmessages,4)
-error_check(rawmegabytes,3)
 for line in rawminutes:
     splitline = line.split(",")
     for i in listnames:
