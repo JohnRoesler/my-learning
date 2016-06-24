@@ -30,7 +30,6 @@ def create_name_dictionary():
         listnames.append(i.strip())
     listnames.append("Total")
     resultdict = {x:{} for x in listnames}
-create_name_dictionary()
 #Define billing usage buckets as: usage limit, cost in dollars
 def billing_usage_buckets():
     global minutes
@@ -54,7 +53,6 @@ def billing_usage_buckets():
     global device
     device = 6
     allowedvariance = 0
-billing_usage_buckets()
 #Open files throug user input, or default to standard names if blank - will add user input later
 def open_usage_files():
     global rawminutes, rawmessages, rawmegabytes
@@ -67,7 +65,6 @@ def open_usage_files():
         rawmessages = open(filename)
     for filename in glob.glob(pathmb):
         rawmegabytes = open(filename)
-open_usage_files()
 #Check files for names input to confirm if any are not in the files
 def error_check(fname1,fname2,fname3,var1,var2,var3):
     while True:
@@ -94,7 +91,6 @@ def name_list_error_check(fname,var):
         sline = lines.split(",")
         checklist.append(sline[var])
     fname.seek(0, 0)
-error_check(rawminutes,rawmessages,rawmegabytes,5,4,3)
 #Take bill information as inputs: total bill
 def take_bill_info():
     while True:
@@ -110,29 +106,30 @@ def take_bill_info():
                 continue
     global resultdict
     resultdict["Total"]["costtotal"] = billinput
-take_bill_info()
 #Loop through usage files and sum by person and total
-for line in rawminutes:
-    splitline = line.split(",")
+def sum_usage_by_person():
+    global resultdict
+    for line in rawminutes:
+        splitline = line.split(",")
+        for i in listnames:
+            if splitline[5] == i:
+                resultdict[i]["min"] = resultdict[i].get("min",0) + int(splitline[13])
+                resultdict["Total"]["min"] = resultdict["Total"].get("min",0) + int(splitline[13])
+    for line in rawmessages:
+        splitline = line.split(",")
+        for i in listnames:
+            if splitline[4] == i:
+                resultdict[i]["msg"] = resultdict[i].get("msg",0) + 1
+                resultdict["Total"]["msg"] = resultdict["Total"].get("msg",0) + 1
+    for line in rawmegabytes:
+        splitline = line.split(",")
+        for i in listnames:
+            if splitline[3] == i:
+                resultdict[i]["mb"] = resultdict[i].get("mb",0) + int(splitline[5])
+                resultdict["Total"]["mb"] = resultdict["Total"].get("mb",0) + int(splitline[5])
+    #convert megabytes current storage of kilobytes into megabytes
     for i in listnames:
-        if splitline[5] == i:
-            resultdict[i]["min"] = resultdict[i].get("min",0) + int(splitline[13])
-            resultdict["Total"]["min"] = resultdict["Total"].get("min",0) + int(splitline[13])
-for line in rawmessages:
-    splitline = line.split(",")
-    for i in listnames:
-        if splitline[4] == i:
-            resultdict[i]["msg"] = resultdict[i].get("msg",0) + 1
-            resultdict["Total"]["msg"] = resultdict["Total"].get("msg",0) + 1
-for line in rawmegabytes:
-    splitline = line.split(",")
-    for i in listnames:
-        if splitline[3] == i:
-            resultdict[i]["mb"] = resultdict[i].get("mb",0) + int(splitline[5])
-            resultdict["Total"]["mb"] = resultdict["Total"].get("mb",0) + int(splitline[5])
-#convert megabytes current storage of kilobytes into megabytes
-for i in listnames:
-    resultdict[i]["mb"] = int(round(resultdict[i]["mb"] / 1024.00))
+        resultdict[i]["mb"] = int(round(resultdict[i]["mb"] / 1024.00))
 #calculate the cost per unit
 def calc_cost_unit(bucket,type,size,cost):
     global resultdict
@@ -145,24 +142,38 @@ def calc_cost_unit(bucket,type,size,cost):
             resultdict["Total"][cost] = resultdict["Total"].get(cost,0) + round(bucket[i][1] * (resultdict["Total"][type] - bucket[i][0]) + bucket["xlarge"][1],2)
             resultdict["Total"][size] = resultdict["Total"].get(size,"") + i
             break
-calc_cost_unit(minutes,"min","sizemin","costmin")
-calc_cost_unit(messages,"msg","sizemsg","costmsg")
-calc_cost_unit(megabytes,"mb","sizemb","costmb")
-resultdict["Total"]["fees"] = resultdict["Total"]["costtotal"] - resultdict["Total"]["costmin"] - resultdict["Total"]["costmsg"] - resultdict["Total"]["costmb"] - device * (len(listnames)-1)
+def calc_cost_sum_unit_to_total():
+    global resultdict
+    calc_cost_unit(minutes,"min","sizemin","costmin")
+    calc_cost_unit(messages,"msg","sizemsg","costmsg")
+    calc_cost_unit(megabytes,"mb","sizemb","costmb")
+    resultdict["Total"]["fees"] = resultdict["Total"]["costtotal"] - resultdict["Total"]["costmin"] - resultdict["Total"]["costmsg"] - resultdict["Total"]["costmb"] - device * (len(listnames)-1)
 #calculate cost per usage category to each person in the dictionary
 def calc_cost_category_person(cost, type, person):
     global resultdict
     resultdict[person][cost] = resultdict[person].get(cost,0) + round((resultdict["Total"][cost] * resultdict[person][type] / resultdict["Total"][type]),2)
-for i in listnames:
-    if i == "Total": continue
-    calc_cost_category_person("costmin","min",i)
-    calc_cost_category_person("costmsg","msg",i)
-    calc_cost_category_person("costmb","mb",i)
-    resultdict[i]["costtotal"] = round(resultdict[i]["costmin"] + resultdict[i]["costmsg"] + resultdict[i]["costmb"] + device + resultdict["Total"]["fees"] / 6,2)
-#export the results to a csv file
-with open("monthlybill.csv", "wb") as csvfile:
-    fieldnames = ["Name", "Minutes", "Messages", "Megabytes", "Total Cost"]
-    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-    writer.writeheader()
+def calc_cost_person()
+    global resultdict
     for i in listnames:
-        writer.writerow({"Name": i, "Minutes": resultdict[i]["min"], "Messages": resultdict[i]["msg"], "Megabytes": resultdict[i]["mb"], "Total Cost": resultdict[i]["costtotal"]})
+        if i == "Total": continue
+        calc_cost_category_person("costmin","min",i)
+        calc_cost_category_person("costmsg","msg",i)
+        calc_cost_category_person("costmb","mb",i)
+        resultdict[i]["costtotal"] = round(resultdict[i]["costmin"] + resultdict[i]["costmsg"] + resultdict[i]["costmb"] + device + resultdict["Total"]["fees"] / 6,2)
+#export the results to a csv file
+def export_to_csv():
+    with open("monthlybill.csv", "wb") as csvfile:
+        fieldnames = ["Name", "Minutes", "Messages", "Megabytes", "Total Cost"]
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        for i in listnames:
+            writer.writerow({"Name": i, "Minutes": resultdict[i]["min"], "Messages": resultdict[i]["msg"], "Megabytes": resultdict[i]["mb"], "Total Cost": resultdict[i]["costtotal"]})
+create_name_dictionary()
+billing_usage_buckets()
+open_usage_files()
+error_check(rawminutes,rawmessages,rawmegabytes,5,4,3)
+take_bill_info()
+sum_usage_by_person()
+calc_cost_sum_unit_to_total()
+calc_cost_person()
+export_to_csv()
