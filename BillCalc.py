@@ -112,9 +112,9 @@ def sum_usage_by_person():
     for line in rawminutes:
         splitline = line.split(",")
         for i in listnames:
-            if splitline[5] == i:
-                resultdict[i]["min"] = resultdict[i].get("min",0) + int(splitline[13])
-                resultdict["Total"]["min"] = resultdict["Total"].get("min",0) + int(splitline[13])
+            if splitline[4] == i:
+                resultdict[i]["min"] = resultdict[i].get("min",0) + int(splitline[12])
+                resultdict["Total"]["min"] = resultdict["Total"].get("min",0) + int(splitline[12])
     for line in rawmessages:
         splitline = line.split(",")
         for i in listnames:
@@ -152,7 +152,7 @@ def calc_cost_sum_unit_to_total():
 def calc_cost_category_person(cost, type, person):
     global resultdict
     resultdict[person][cost] = resultdict[person].get(cost,0) + round((resultdict["Total"][cost] * resultdict[person][type] / resultdict["Total"][type]),2)
-def calc_cost_person()
+def calc_cost_person():
     global resultdict
     for i in listnames:
         if i == "Total": continue
