@@ -1,0 +1,7 @@
+
+If you would like to run another report, here are the options again:
+(1) Full detail: usage & cost by person by type
+(2) By person: usage & cost for one person by type
+(3) By type: usage & cost by type
+
+Again, the first step will be to select what type of report you would like to run.
