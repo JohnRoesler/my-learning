@@ -50,8 +50,8 @@ def init_program():
 
 #the interum landing page after a report has been generated that allows the user to determine what is next
 def interim_program():
-    print 'Interim program'
-
+    interim_message = open("interim_message.txt","r").read()
+    print interim_message
 
 #the report options available from the main landing page
 def full_detail(): 
