@@ -1,3 +1,4 @@
+
 Welcome to the Ting bill calculator. 
 This program will take the minutes, messages and megabytes csv files (which can be downloaded from your Ting account each month) and can provide the following: 
 (1) Full detail: usage & cost by person by type
