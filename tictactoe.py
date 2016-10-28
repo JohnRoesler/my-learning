@@ -3,7 +3,6 @@ import sys
 import random
 #http://www.practicepython.org/
 #define the variables needed for the program
-#additional comment for testing git
 players = dict()
 players["1"] = "X"
 players["2"] = "O"
@@ -139,4 +138,3 @@ def randprint(var):
         sys.stdout.flush()
         time.sleep((random.random() * 0.01))
 playgame(turncount)
-#Additional testing of git using this file for updates
