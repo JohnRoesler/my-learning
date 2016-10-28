@@ -3,6 +3,7 @@ import sys
 import random
 #http://www.practicepython.org/
 #define the variables needed for the program
+#additional comment for testing git
 players = dict()
 players["1"] = "X"
 players["2"] = "O"
