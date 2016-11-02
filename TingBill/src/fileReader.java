@@ -3,15 +3,12 @@
  */
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Arrays;
-import com.opencsv.CSVReader;
-import com.sun.istack.internal.NotNull;
 
 public class fileReader {
 
 
+    //This method takes the filename and the type(min, msg, or mb) and the persons name and returns the usage
     public int parseFile(String filename, String type, String name){
 
         int returnValue = 0;
@@ -43,33 +40,16 @@ public class fileReader {
                 }
             }
         }
-        catch (FileNotFoundException e){
-            e.printStackTrace();
-        }
         catch (IOException e){
             e.printStackTrace();
         }
 
+
         return returnValue;
     }
 
-    public void testFile(String filename){
-
-        CSVReader reader = null;
-        char separator = ',';
-        char quotechar = '"';
-
-        try {
-            reader = new CSVReader(new FileReader(filename), separator, quotechar);
-            String[] line;
-            while ((line = reader.readNext()) != null) {
-                System.out.println(Arrays.toString(line));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
+    //This method removes commas that are inside of quotation marks to allow for splitting the CSV on commas
+    //Without removing, the data will split in places we don't want it to e.g. "City, State"
     public String cleanLineOfCommasInsideQuotes(String line){
         String outputLine = "";
         char[] splitLine;
