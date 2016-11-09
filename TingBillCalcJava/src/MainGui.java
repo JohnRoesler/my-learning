@@ -43,7 +43,11 @@ public class MainGui extends Application {
         layout1.setAlignment(Pos.CENTER);
 
         layout1.getChildren().addAll(label1,button1);
+<<<<<<< HEAD
         importData = new Scene(layout1, 500, 200);
+=======
+        importData = new Scene(layout1, 300, 200);
+>>>>>>> 93389e3e5f96c6a788acd1ac30743a4d1a6b0c40
 
         window.setTitle("Ting Bill Calculator");
         window.setScene(importData);
