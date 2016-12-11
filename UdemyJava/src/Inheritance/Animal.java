@@ -1,4 +1,4 @@
-package Inheritance;
+package src.inheritance;
 
 /**
  * Created by Z001W4M on 12/8/2016.
