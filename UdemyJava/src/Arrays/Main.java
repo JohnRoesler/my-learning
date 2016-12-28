@@ -13,12 +13,12 @@ public class Main {
     private static GroceryList groceryList = new GroceryList();*/
 
     public static void main(String[] args) {
-        MobilePhone myPhone = new MobilePhone();
-        myPhone.powerOn();
 
+        Bank myBank = new Bank();
+        myBank.talkToTeller();
 
-
-
+/*        MobilePhone myPhone = new MobilePhone();
+        myPhone.powerOn();*/
 
         /*boolean quit = false;
         int choice = 0;
