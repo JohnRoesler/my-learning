@@ -56,8 +56,13 @@ public class Bank {
     public int selectBranch (){
         System.out.println("Enter the name of the branch to select: ");
         String branchName = scanner.nextLine();
+        int branchPosition = findBranchPosition(branchName);
+        if (branchPosition < 0){
+            System.out.println("You must first create a branch!");
+            return -1;
+        }
         System.out.println("Current branch selected: " + branchName);
-        return findBranchPosition(branchName);
+        return branchPosition;
     }
 
     public String addNewCustomer(int branchPosition){
@@ -109,8 +114,13 @@ public class Bank {
         }
         System.out.println("Enter the name of the customer to select:");
         String customerName = scanner.nextLine();
+        int customerPosition = findCustomerPosition(customerName,branchPosition);
+        if (customerPosition < 0){
+            System.out.println("You must first create a customer!");
+            return -1;
+        }
         System.out.println("Current customer selected: " + customerName);
-        return findCustomerPosition(customerName,branchPosition);
+        return customerPosition;
     }
 
     public void printInstructions(){
@@ -150,14 +160,23 @@ public class Bank {
                     break;
                 case 2:
                     currentBranch = selectBranch();
+                    if (currentBranch < 0){
+                        break;
+                    }
                     currentBranchName = branch.get(currentBranch).getName();
                     break;
                 case 3:
                     currentCustomerName = addNewCustomer(currentBranch);
+                    if (currentBranch < 0){
+                        break;
+                    }
                     currentCustomer = findCustomerPosition(currentCustomerName,currentBranch);
                     break;
                 case 4:
                     currentCustomer = selectCustomer(currentBranch);
+                    if (currentCustomer < 0){
+                        break;
+                    }
                     currentCustomerName = branch.get(currentBranch).getBranchCustomer().get(currentCustomer).getName();
                     break;
                 case 5:
