@@ -19,38 +19,18 @@ public class Bank {
         this.branch = new ArrayList<Branch>();
     }
 
+    //Branch code
     public String newBranch (){
         System.out.println("Enter the new branch name: ");
         String branchName = scanner.nextLine();
         this.branch.add(new Branch(branchName));
+        if (findBranchPosition(branchName) >= 0){
+            System.out.println("That branch already exists!");
+            return "";
+        }
         System.out.println("New branch created: " + branchName);
         System.out.println("Current branch selected: " + branchName);
         return branchName;
-    }
-
-    public void listBranches(){
-        if (branch.size() == 0){
-            System.out.println("No branches exist!");
-        }
-        for (int i = 0; i < branch.size(); i++){
-            System.out.println("Branch #" + (i+1) + ": " + branch.get(i).getName());
-        }
-    }
-
-    public void listCustomers(int branchPosition){
-        if (branchPosition < 0){
-            System.out.println("You must first create a branch");
-            return;
-        }
-        branch.get(branchPosition).listCustomers();
-    }
-
-    public void listTransactions(int branchPosition, int customerPosition){
-        if (branchPosition < 0 && customerPosition < 0){
-            System.out.println("Select a branch/customer!");
-            return;
-        }
-        branch.get(branchPosition).listTransactions(customerPosition);
     }
 
     public int selectBranch (){
@@ -65,33 +45,13 @@ public class Bank {
         return branchPosition;
     }
 
-    public String addNewCustomer(int branchPosition){
-        if (branchPosition < 0){
-            System.out.println("You must first create a branch");
-            return "";
+    public void listBranches(){
+        if (branch.size() == 0){
+            System.out.println("No branches exist!");
         }
-        System.out.println("Enter the customer name: ");
-        String customerName = scanner.nextLine();
-        System.out.println("Enter the initial deposit: ");
-        double beginBalance = scanner.nextDouble();
-        scanner.nextLine();
-        branch.get(branchPosition).addNewCustomer(customerName,beginBalance);
-        System.out.println("At branch: " + branch.get(branchPosition).getName() + "... \nCreated new customer, " +
-                customerName + ", with an initial transaction of $" + beginBalance);
-        System.out.println("Current customer selected: " + customerName);
-        return customerName;
-    }
-
-    public void addCustomerTransaction (int branchPosition, int customerPosition){
-        if (branchPosition < 0 && customerPosition < 0){
-            System.out.println("Select a branch/customer!");
-            return;
+        for (int i = 0; i < branch.size(); i++){
+            System.out.println("Branch #" + (i+1) + ": " + branch.get(i).getName());
         }
-        System.out.println("Enter the transaction amount: ");
-        double transaction = scanner.nextDouble();
-        scanner.nextLine();
-        branch.get(branchPosition).newTransaction(transaction,customerPosition);
-        System.out.println("Transaction recorded for $" + transaction);
     }
 
     private int findBranchPosition(String name){
@@ -103,8 +63,26 @@ public class Bank {
         return -1;
     }
 
-    private int findCustomerPosition(String name, int branchPosition){
-        return branch.get(branchPosition).findCustomerPosition(name);
+    //Customer code
+    public String addNewCustomer(int branchPosition){
+        if (branchPosition < 0){
+            System.out.println("You must first create a branch");
+            return "";
+        }
+        System.out.println("Enter the customer name: ");
+        String customerName = scanner.nextLine();
+        if (findCustomerPosition(customerName, branchPosition) >= 0){
+            System.out.println("That customer already exists!");
+            return "";
+        }
+        System.out.println("Enter the initial deposit: ");
+        double beginBalance = scanner.nextDouble();
+        scanner.nextLine();
+        branch.get(branchPosition).addNewCustomer(customerName,beginBalance);
+        System.out.println("At branch: " + branch.get(branchPosition).getName() + "... \nCreated new customer, " +
+                customerName + ", with an initial transaction of $" + beginBalance);
+        System.out.println("Current customer selected: " + customerName);
+        return customerName;
     }
 
     public int selectCustomer(int branchPosition){
@@ -123,6 +101,41 @@ public class Bank {
         return customerPosition;
     }
 
+    public void listCustomers(int branchPosition){
+        if (branchPosition < 0){
+            System.out.println("You must first create a branch");
+            return;
+        }
+        branch.get(branchPosition).listCustomers();
+    }
+
+    private int findCustomerPosition(String name, int branchPosition){
+        return branch.get(branchPosition).findCustomerPosition(name);
+    }
+
+    //Transaction code
+    public void addCustomerTransaction (int branchPosition, int customerPosition){
+        if (branchPosition < 0 && customerPosition < 0){
+            System.out.println("Select a branch/customer!");
+            return;
+        }
+        System.out.println("Enter the transaction amount: ");
+        double transaction = scanner.nextDouble();
+        scanner.nextLine();
+        branch.get(branchPosition).newTransaction(transaction,customerPosition);
+        System.out.println("Transaction recorded for $" + transaction);
+    }
+
+    public void listTransactions(int branchPosition, int customerPosition){
+        if (branchPosition < 0 && customerPosition < 0){
+            System.out.println("You must first select a branch/customer!");
+            return;
+        }
+        branch.get(branchPosition).listTransactions(customerPosition);
+    }
+
+
+    //Code to run the application
     public void printInstructions(){
         System.out.println("Hello, welcome to the bank, please select one of the following options: \n" +
                 "0 - Print instructions\n" +

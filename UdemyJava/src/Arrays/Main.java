@@ -14,12 +14,27 @@ public class Main {
 
     public static void main(String[] args) {
 
+        //This code is for the Bank class functionality
         Bank myBank = new Bank();
         myBank.talkToTeller();
 
+
+
+
+
+        //This section of the code is for the MobilePhone class functionality
 /*        MobilePhone myPhone = new MobilePhone();
         myPhone.powerOn();*/
 
+
+
+
+
+
+
+
+
+        //All the code below here is related to the grocery list class functionality
         /*boolean quit = false;
         int choice = 0;
         printInstructions();
