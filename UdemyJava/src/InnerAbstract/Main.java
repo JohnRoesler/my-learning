@@ -1,9 +1,4 @@
-package src.LinkedList;
-
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.ListIterator;
-import java.util.Scanner;
+package src.InnerAbstract;
 
 /**
  * Created by Z001W4M on 1/3/2017.
@@ -21,7 +16,7 @@ public class Main {
         myPlayList.addSong(WhiteAlbum.getAlbum().get(0));
         myPlayList.addSong(WhiteAlbum.getAlbum().get(2));
         myPlayList.addSong(WhiteAlbum.getAlbum().get(1));
-
+        
         myPlayList.listSongs();
         myPlayList.playSongs();
 
