@@ -1,4 +1,4 @@
-package src.InnerAbstract;
+package src.InnerAbstract.InnerClass;
 
 /**
  * Created by Z001W4M on 1/3/2017.

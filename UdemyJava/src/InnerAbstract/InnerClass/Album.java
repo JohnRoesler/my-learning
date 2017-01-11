@@ -1,4 +1,4 @@
-package src.InnerAbstract;
+package src.InnerAbstract.InnerClass;
 
 import java.util.ArrayList;
 
@@ -17,20 +17,7 @@ public class Album {
     }
 
     public boolean addSong(Song newSong){
-        if(findSong(newSong.getTitle()) == false){
-            this.album.addSong(newSong);
-            return true;
-        }
-        return false;
-    }
-
-    public ArrayList<Song> getAlbum() {
-
-        return album.getSongs();
-    }
-
-    public String getAlbumTitle() {
-        return albumTitle;
+        return this.album.addSong(newSong);
     }
 
     private boolean findSong(String title){
@@ -40,8 +27,14 @@ public class Album {
     private class innerSongList{
         private ArrayList<Song> songs;
 
-        public void addSong (Song newSong){
-            songs.add(newSong);
+        public boolean addSong (Song newSong){
+            if (!findSong(newSong.getTitle())){
+                songs.add(newSong);
+                return true;
+            } else {
+                return false;
+            }
+
         }
 
         public boolean findSong(String songName){
@@ -61,6 +54,15 @@ public class Album {
         public ArrayList<Song> getSongs() {
             return songs;
         }
+    }
+
+    public ArrayList<Song> getAlbum() {
+
+        return album.getSongs();
+    }
+
+    public String getAlbumTitle() {
+        return albumTitle;
     }
 
 }

@@ -1,4 +1,4 @@
-package src.InnerAbstract;
+package src.InnerAbstract.InnerClass;
 
 import java.util.LinkedList;
 import java.util.ListIterator;
