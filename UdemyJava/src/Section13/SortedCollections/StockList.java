@@ -1,6 +1,7 @@
 package src.Section13.SortedCollections;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -9,7 +10,7 @@ public class StockList {
     private final Map<String,StockItem> list;
 
     public StockList() {
-        this.list = new LinkedHashMap<>();
+        this.list = new HashMap<>();
     }
 
     public int addStock(StockItem item){
@@ -33,9 +34,30 @@ public class StockList {
 
         if ((inStock != null) && (inStock.quantityInStock() >= quantity) && (quantity > 0)){
             inStock.adjustStock(-quantity);
+            inStock.adjustReserved(-quantity);
             return quantity;
         }
 
+        return 0;
+    }
+
+    public int reserveStock(String item, int quantity){
+        StockItem itemReserved = list.getOrDefault(item, null);
+
+        if ((itemReserved != null) && (itemReserved.quantityInStock() >= quantity) && (quantity > 0)){
+            itemReserved.adjustReserved(quantity);
+            return quantity;
+        }
+        return 0;
+    }
+
+    public int unreserveStock(String item, int quantity){
+        StockItem itemReserved = list.getOrDefault(item, null);
+
+        if ((itemReserved != null) && (itemReserved.getQuantityReserved() >= quantity) && (quantity > 0)){
+            itemReserved.adjustReserved(-quantity);
+            return quantity;
+        }
         return 0;
     }
 
@@ -45,6 +67,14 @@ public class StockList {
 
     public Map<String, StockItem> items(){
         return Collections.unmodifiableMap(list);
+    }
+
+    public Map<String, Double> priceList(){
+        Map<String, Double> prices = new LinkedHashMap<>();
+        for(Map.Entry<String, StockItem> item : list.entrySet()){
+            prices.put(item.getKey(), item.getValue().getPrice());
+        }
+        return Collections.unmodifiableMap(prices);
     }
 
     @Override
