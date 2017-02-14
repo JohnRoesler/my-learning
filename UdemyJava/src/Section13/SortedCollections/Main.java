@@ -1,5 +1,7 @@
 package src.Section13.SortedCollections;
 
+import java.util.Map;
+
 public class Main {
 
     private static StockList stockList = new StockList();
@@ -37,7 +39,7 @@ public class Main {
         temp = new StockItem("vase", 8.76, 40);
         stockList.addStock(temp);
 
-        System.out.println(stockList.toString());
+//        System.out.println(stockList.toString());
 
         Basket myBasket = new Basket("John");
         addToBasket(myBasket, "car", 1);
@@ -57,13 +59,22 @@ public class Main {
         addToBasket(myBasket, "vase", 13);
         System.out.println(myBasket);
 
-        System.out.println(stockList);
+        Basket testBasket = new Basket("Test");
+        addToBasket(testBasket, "phone", 1);
+        addToBasket(testBasket, "towel", 4);
+        System.out.println(testBasket);
+
+        removeFromBasket(testBasket, "towel", 2);
+        removeFromBasket(testBasket, "towel", 3);
+        System.out.println(testBasket);
 
         checkOut(myBasket);
+        checkOut(testBasket);
 
         System.out.println(stockList);
 
         System.out.println(myBasket);
+        System.out.println(testBasket);
 
 //        System.out.println();
 //        for (Map.Entry<String,Double> price : stockList.priceList().entrySet()){
@@ -78,8 +89,7 @@ public class Main {
             return 0;
         }
         if (stockList.reserveStock(item, quantity) != 0){
-            basket.add(stockItem,quantity);
-            return quantity;
+            return basket.add(stockItem,quantity);
         }
         System.out.println("Insufficient stock of item: " + item);
         return 0;
@@ -92,13 +102,16 @@ public class Main {
             return 0;
         }
         if (stockList.unreserveStock(item, quantity) != 0){
-            basket.remove(stockItem, quantity);
+            return basket.remove(stockItem, quantity);
         }
         System.out.println("You can't remove more than you have!");
         return 0;
     }
 
     public static int checkOut(Basket basket){
-        return basket.checkOut(stockList);
+        for (Map.Entry<StockItem, Integer> item : basket.items().entrySet()){
+            stockList.sellStock(item.getKey().getName(), item.getValue());
+        }
+        return basket.emptyBasket(stockList);
     }
 }

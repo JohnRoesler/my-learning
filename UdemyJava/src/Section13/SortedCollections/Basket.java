@@ -1,7 +1,6 @@
 package src.Section13.SortedCollections;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -38,10 +37,7 @@ public class Basket {
         return -1;
     }
 
-    public int checkOut(StockList stockList){
-        for (Map.Entry<StockItem, Integer> item : list.entrySet()){
-            stockList.sellStock(item.getKey().getName(), item.getValue());
-        }
+    public int emptyBasket(StockList stockList){
         list.clear();
         return 0;
     }
@@ -61,6 +57,6 @@ public class Basket {
             s = s + item.getKey() + ". " + item.getValue() + "\n";
             totalCost += item.getKey().getPrice() * item.getValue();
         }
-        return s + "Total cost " + totalCost;
+        return s + "Total cost " + String.format("%.2f", totalCost);
     }
 }
